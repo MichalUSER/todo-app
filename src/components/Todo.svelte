@@ -67,7 +67,7 @@
     <div class="todos">
         {#each todos as { name }, index}
             <div class="todo" transition:fade={{ duration: 100 }}>
-                <input bind:value={name} />
+                <textarea bind:value={name} />
                 <button on:click={() => remove(index)}>x</button>
             </div>
         {/each}
@@ -103,7 +103,7 @@
     .todo {
         @apply my-4 px-0 md:px-16 py-8 bg-indigo-300 text-lg text-indigo-600 flex items-center flex-col;
     }
-    .todo > input {
+    .todo > textarea {
         @apply bg-transparent border-none text-center w-48 md:w-auto focus:outline-none;
     }
     .todo > button {
