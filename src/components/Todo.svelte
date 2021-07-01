@@ -1,78 +1,68 @@
 <script>
-import { fade } from "svelte/transition";
-import { onMount } from "svelte";
+	import { todos } from "../stores.js";
+	import TailwindTheme, { toggle } from "./TailwindTheme.svelte";
+	import { fade } from "svelte/transition";
 
-let todoName = "";
-let todos = [];
+	let todoTitle = "";
+	let todoDescription = "";
+	let defaultHeight = 40;
 
-function add() {
-	if (todoName.length != 0) {
-		todos.push({
-			text: todoName,
-			height: "70",
-		});
-		todos = todos;
-		todoName = "";
-		localStorage.setItem("todos", JSON.stringify(todos));
-	} else {
-		localStorage.setItem("todos", JSON.stringify(todos));
-	}
-}
-
-function remove(index) {
-	todos.splice(index, 1);
-	todos = todos;
-	localStorage.setItem("todos", JSON.stringify(todos));
-}
-
-function toggle() {
-	let htmlClasses = document.querySelector("html").classList;
-	if (localStorage.theme === "dark") {
-		htmlClasses.remove("dark");
-		localStorage.removeItem("theme");
-	} else {
-		htmlClasses.add("dark");
-		localStorage.theme = "dark";
-	}
-}
-onMount(() => {
-	if (localStorage.getItem("todos") !== null) {
-		todos = JSON.parse(localStorage.getItem("todos"));
+	function add() {
+		if (todoTitle.length != 0) {
+			$todos = [
+				...$todos,
+				{
+					title: todoTitle,
+					description: todoDescription,
+					height: defaultHeight,
+				},
+			];
+			todoTitle = "";
+			todoDescription = "";
+			localStorage.setItem("todos", JSON.stringify($todos));
+		} else {
+			localStorage.setItem("todos", JSON.stringify($todos));
+		}
 	}
 
-	if (
-		localStorage.theme === "dark" ||
-		(!"theme" in localStorage &&
-			window.matchMedia("(prefers-color-scheme: dark)").matches)
-	) {
-		document.querySelector("html").classList.add("dark");
-	} else if (localStorage.theme === "dark") {
-		document.querySelector("html").classList.add("dark");
+	function remove(index) {
+		let tempTodos = $todos;
+		tempTodos.splice(index, 1);
+		$todos = tempTodos;
+		localStorage.setItem("todos", JSON.stringify($todos));
 	}
-});
 </script>
 
+<TailwindTheme />
 <header>
 	<h1>Todo app</h1>
 </header>
 <main>
 	<div class="form">
-		<input
-			type="text"
-			placeholder="Name"
-			bind:value={todoName}
-			on:keydown={(e) => e.key === "Enter" && add()}
-		/>
-		<button class="add" on:click={add}>Add</button>
+		<div class="form_div">
+			<input
+				type="text"
+				class="form_input"
+				placeholder="Title"
+				bind:value={todoTitle}
+				on:keydown={(e) => e.key === "Enter" && add()}
+			/>
+			<button class="add" on:click={add}>Add</button>
+			<!-- <textarea
+				bind:value={todoDescription}
+				class="form_textarea"
+				placeholder="Description"
+				on:keydown={(e) => e.key === "Enter" && add()}
+			/> -->
+		</div>
 	</div>
 	<div class="todos">
-		{#each todos as { text, height }, index}
+		{#each $todos as { title, description, height }, index}
 			<div class="todo" transition:fade={{ duration: 100 }}>
-				<textarea
-					style="height: {height}px;"
-					bind:value={text}
-					bind:clientHeight={height}
-				/>
+				<input type="text" bind:value={title} />
+				<div bind:clientHeight={height} style="height: {height}px;">
+					<textarea class="todo_textarea" bind:value={description} />
+				</div>
 				<button on:click={() => remove(index)}>x</button>
 			</div>
 		{/each}
@@ -81,41 +71,53 @@ onMount(() => {
 <button class="toggle" on:click={toggle}>⚙️</button>
 
 <style type="postcss">
-header {
-	@apply mt-16 flex flex-col items-center;
-}
-main {
-	@apply mt-8 md:mt-32 flex flex-col items-center;
-}
-h1 {
-	@apply text-4xl;
-}
+	header {
+		@apply mt-10 flex flex-col items-center;
+	}
+	main {
+		@apply mt-8 md:mt-32 flex flex-col items-center;
+	}
+	h1 {
+		@apply text-4xl;
+	}
 
-.form {
-	@apply flex items-center flex-col md:flex-row;
-}
-.form > input {
-	@apply mx-4 text-lg border border-indigo-800 bg-transparent px-3 py-2 focus:outline-none focus:border-indigo-300 transition;
-}
+	.form {
+		@apply flex flex-col items-center;
+	}
+	.form_div {
+		@apply flex flex-col items-center md:flex-row;
+	}
+	.form_input {
+		@apply mx-4 text-lg border border-indigo-800 bg-transparent px-3 py-2 focus:outline-none focus:border-indigo-300 transition;
+	}
+	/* .form_textarea {
+		@apply mx-4 my-2 max-h-48 text-lg border border-indigo-800 bg-transparent px-3 py-2 focus:outline-none focus:border-indigo-300 transition;
+	} */
 
-.add {
-	@apply px-6 py-1 mt-2 md:mt-0 rounded border-2 border-opacity-0 text-lg bg-indigo-300 border-indigo-300 cursor-pointer focus:border-indigo-500 focus:outline-none;
-}
+	.add {
+		@apply px-6 py-1 mt-2 md:mt-0 rounded border-2 border-opacity-0 text-lg bg-indigo-300 border-indigo-300 cursor-pointer focus:border-indigo-500 focus:outline-none;
+	}
 
-.todos {
-	@apply mt-8 flex flex-col items-center;
-}
-.todo {
-	@apply my-4 px-0 md:px-16 py-8 bg-indigo-300 text-lg text-indigo-600 flex items-center flex-col;
-}
-.todo > textarea {
-	@apply bg-transparent border-none text-center w-48 md:w-auto focus:outline-none;
-}
-.todo > button {
-	@apply text-2xl text-red-500 focus:outline-none;
-}
+	.todos {
+		@apply mt-8 flex flex-col items-center;
+	}
+	.todo {
+		@apply my-4 px-0 md:px-16 py-8 bg-indigo-300 text-lg flex items-center flex-col;
+	}
+	.todo > div {
+		@apply resize-y overflow-hidden w-48 md:w-auto;
+	}
+	.todo > input {
+		@apply bg-transparent text-center text-indigo-700 text-2xl focus:outline-none;
+	}
+	.todo_textarea {
+		@apply bg-transparent text-center text-indigo-500 resize-none focus:outline-none;
+	}
+	.todo > button {
+		@apply text-2xl text-red-500 focus:outline-none;
+	}
 
-.toggle {
-	@apply text-2xl cursor-pointer fixed top-0 right-0 m-4;
-}
+	.toggle {
+		@apply text-2xl cursor-pointer fixed top-0 right-0 m-4;
+	}
 </style>
