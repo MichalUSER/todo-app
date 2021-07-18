@@ -88,7 +88,7 @@
 		@apply flex flex-col items-center md:flex-row;
 	}
 	.form_input {
-		@apply mx-4 text-lg border border-indigo-800 bg-transparent px-3 py-2 focus:outline-none focus:border-indigo-300 transition;
+		@apply mx-4 text-lg border border-indigo-600 bg-transparent px-3 py-2 focus:outline-none focus:border-indigo-300 transition;
 	}
 	/* .form_textarea {
 		@apply mx-4 my-2 max-h-48 text-lg border border-indigo-800 bg-transparent px-3 py-2 focus:outline-none focus:border-indigo-300 transition;
