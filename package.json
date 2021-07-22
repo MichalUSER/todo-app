@@ -5,19 +5,19 @@
 	"build": "snowpack build"
 	},
 	"devDependencies": {
-	"@snowpack/plugin-postcss": "^1.2.2",
-	"@snowpack/plugin-svelte": "^3.6.1",
-	"postcss": "^8.2.12",
+	"@snowpack/plugin-postcss": "^1.4.3",
+	"@snowpack/plugin-svelte": "^3.7.0",
+	"postcss": "^8.3.6",
 	"postcss-cli": "^8.3.1",
-	"snowpack": "^3.0.1",
+	"snowpack": "^3.8.3",
 	"svelte-routing": "^1.6.0",
-	"tailwindcss": "^2.1.2"
+	"tailwindcss": "^2.2.6"
 	},
 	"dependencies": {
-	"autoprefixer": "^10.2.5",
-	"postcss-import": "^14.0.1",
-	"sirv-cli": "^1.0.11",
-	"svelte": "^3.37.0",
-	"svelte-preprocess": "^4.7.2"
+	"autoprefixer": "^10.3.1",
+	"postcss-import": "^14.0.2",
+	"sirv-cli": "^1.0.12",
+	"svelte": "^3.40.0",
+	"svelte-preprocess": "^4.7.4"
 	}
 }
